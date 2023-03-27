@@ -25,13 +25,6 @@ module PawChecker
         }
         puts "#belongs_to"
         p belongs
-        has_manies = commands.select {|node|
-          node.child_nodes.first.value == "has_many"
-        }.map {|node|
-          node.child_nodes[1].child_nodes.first.child_nodes.first.value
-        }
-        puts "#has_many"
-        p has_manies
 
         cls = ClassDefinition.new(commands)
         cls.pretty_print
@@ -43,11 +36,22 @@ module PawChecker
     end
 
     def pretty_print
+      puts "#has_many"
+      p has_manies
+
       puts "#has_one"
       p has_ones
     end
 
     private
+
+    def has_manies
+      @has_manies ||= @commands.select {|node|
+        node.child_nodes.first.value == "has_many"
+      }.map {|node|
+        node.child_nodes[1].child_nodes.first.child_nodes.first.value
+      }
+    end
 
     def has_ones
       @has_ones ||= @commands.select {|node|
