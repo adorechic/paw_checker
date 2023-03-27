@@ -1,5 +1,19 @@
 module PawChecker
   class ClassDefinition
+    def initialize(commands)
+      @commands = commands
+    end
+
+    def pretty_print
+      has_ones = @commands.select {|node|
+        node.child_nodes.first.value == "has_one"
+      }.map {|node|
+        node.child_nodes[1].child_nodes.first.child_nodes.first.value
+      }
+      puts "#has_one"
+      p has_ones
+    end
+
     def self.parse(path)
       source = SyntaxTree.read(path)
       idx = SyntaxTree.index(source)
@@ -32,13 +46,8 @@ module PawChecker
       puts "#has_many"
       p has_manies
 
-      has_ones = commands.select {|node|
-        node.child_nodes.first.value == "has_one"
-      }.map {|node|
-        node.child_nodes[1].child_nodes.first.child_nodes.first.value
-      }
-      puts "#has_one"
-      p has_ones
+      cls = ClassDefinition.new(commands)
+      cls.pretty_print
     end
   end
 end
