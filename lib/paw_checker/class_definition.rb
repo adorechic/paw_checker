@@ -43,14 +43,18 @@ module PawChecker
     end
 
     def pretty_print
-      has_ones = @commands.select {|node|
-        node.child_nodes.first.value == "has_one"
-      }.map {|node|
-        node.child_nodes[1].child_nodes.first.child_nodes.first.value
-      }
       puts "#has_one"
       p has_ones
     end
 
+    private
+
+    def has_ones
+      @has_ones ||= @commands.select {|node|
+        node.child_nodes.first.value == "has_one"
+      }.map {|node|
+        node.child_nodes[1].child_nodes.first.child_nodes.first.value
+      }
+    end
   end
 end
