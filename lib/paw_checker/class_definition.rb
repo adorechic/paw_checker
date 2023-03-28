@@ -3,24 +3,24 @@ module PawChecker
     class << self
       def parse(path)
         source = SyntaxTree.read(path)
-        idx = SyntaxTree.index(source)
-        cls = idx.find {|i|
-          i.instance_of?(SyntaxTree::Index::ClassDefinition)
-        }
-        puts "class name"
-        puts cls.name
-
         cls = ClassDefinition.new(source)
         cls.pretty_print
       end
     end
 
     def initialize(source)
+      idx = SyntaxTree.index(source)
+      @class_name = idx.find {|i|
+        i.instance_of?(SyntaxTree::Index::ClassDefinition)
+      }.name
       @var_refs = SyntaxTree.search(source, "VarRef")
       @commands = SyntaxTree.search(source, "Command")
     end
 
     def pretty_print
+      puts "class name"
+      puts @class_name
+
       puts "#dependency"
       p consts.map(&:value).map(&:value).uniq
 
