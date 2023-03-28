@@ -18,14 +18,6 @@ module PawChecker
         p consts.map(&:value).map(&:value).uniq
 
         commands = SyntaxTree.search(source, "Command")
-        belongs = commands.select {|node|
-          node.child_nodes.first.value == "belongs_to"
-        }.map {|node|
-          node.child_nodes[1].child_nodes.first.child_nodes.first.value
-        }
-        puts "#belongs_to"
-        p belongs
-
         cls = ClassDefinition.new(commands)
         cls.pretty_print
       end
@@ -36,6 +28,9 @@ module PawChecker
     end
 
     def pretty_print
+      puts "#belongs_to"
+      p belongs
+
       puts "#has_many"
       p has_manies
 
@@ -45,17 +40,21 @@ module PawChecker
 
     private
 
+    def belongs
+      @belongs ||= pick_association_commands("belongs_to")
+    end
+
     def has_manies
-      @has_manies ||= @commands.select {|node|
-        node.child_nodes.first.value == "has_many"
-      }.map {|node|
-        node.child_nodes[1].child_nodes.first.child_nodes.first.value
-      }
+      @has_manies ||= pick_association_commands("has_many")
     end
 
     def has_ones
-      @has_ones ||= @commands.select {|node|
-        node.child_nodes.first.value == "has_one"
+      @has_ones ||= pick_association_commands("has_one")
+    end
+
+    def pick_association_commands(type)
+      @commands.select {|node|
+        node.child_nodes.first.value == type
       }.map {|node|
         node.child_nodes[1].child_nodes.first.child_nodes.first.value
       }
