@@ -10,23 +10,20 @@ module PawChecker
         puts "class name"
         puts cls.name
 
-        var_refs = SyntaxTree.search(source, "VarRef")
-        consts = var_refs.select {|node|
-          node.value.instance_of?(SyntaxTree::Const)
-        }
-        puts "#dependency"
-        p consts.map(&:value).map(&:value).uniq
-
         cls = ClassDefinition.new(source)
         cls.pretty_print
       end
     end
 
     def initialize(source)
+      @var_refs = SyntaxTree.search(source, "VarRef")
       @commands = SyntaxTree.search(source, "Command")
     end
 
     def pretty_print
+      puts "#dependency"
+      p consts.map(&:value).map(&:value).uniq
+
       puts "#belongs_to"
       p belongs
 
@@ -38,6 +35,12 @@ module PawChecker
     end
 
     private
+
+    def consts
+      @var_refs.select {|node|
+        node.value.instance_of?(SyntaxTree::Const)
+      }
+    end
 
     def belongs
       @belongs ||= pick_association_commands("belongs_to")
