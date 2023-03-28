@@ -17,14 +17,13 @@ module PawChecker
         puts "#dependency"
         p consts.map(&:value).map(&:value).uniq
 
-        commands = SyntaxTree.search(source, "Command")
-        cls = ClassDefinition.new(commands)
+        cls = ClassDefinition.new(source)
         cls.pretty_print
       end
     end
 
-    def initialize(commands)
-      @commands = commands
+    def initialize(source)
+      @commands = SyntaxTree.search(source, "Command")
     end
 
     def pretty_print
