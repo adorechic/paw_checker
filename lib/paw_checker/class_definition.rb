@@ -1,14 +1,14 @@
-require 'gviz'
 require 'active_support'
 require 'active_support/core_ext'
 
 module PawChecker
   class ClassDefinition
+    attr_reader :class_name
+
     class << self
       def parse(path)
         source = SyntaxTree.read(path)
-        cls = ClassDefinition.new(source)
-        cls.pretty_print
+        ClassDefinition.new(source)
       end
     end
 
@@ -21,20 +21,14 @@ module PawChecker
       @commands = SyntaxTree.search(source, "Command")
     end
 
-    def pretty_print
-      name = @class_name
-      depends = dependencies + belongs + has_manies + has_ones
-
-      Graph do
-        route name => depends
-        save(:output, :png)
-      end
+    def dependencies
+      references + belongs + has_manies + has_ones
     end
 
     private
 
-    def dependencies
-      @dependencies ||= consts.map(&:value).map(&:value).uniq.map(&:to_sym)
+    def references
+      @references ||= consts.map(&:value).map(&:value).uniq.map(&:to_sym)
     end
 
     def consts
