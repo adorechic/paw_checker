@@ -33,4 +33,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "thor"
   spec.add_dependency "syntax_tree"
+  spec.add_dependency "gviz"
+  spec.add_dependency "activesupport"
 end

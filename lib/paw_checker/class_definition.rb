@@ -1,3 +1,7 @@
+require 'gviz'
+require 'active_support'
+require 'active_support/core_ext'
+
 module PawChecker
   class ClassDefinition
     class << self
@@ -12,29 +16,26 @@ module PawChecker
       idx = SyntaxTree.index(source)
       @class_name = idx.find {|i|
         i.instance_of?(SyntaxTree::Index::ClassDefinition)
-      }.name
+      }.name.to_sym
       @var_refs = SyntaxTree.search(source, "VarRef")
       @commands = SyntaxTree.search(source, "Command")
     end
 
     def pretty_print
-      puts "class name"
-      puts @class_name
+      name = @class_name
+      depends = dependencies + belongs + has_manies + has_ones
 
-      puts "#dependency"
-      p consts.map(&:value).map(&:value).uniq
-
-      puts "#belongs_to"
-      p belongs
-
-      puts "#has_many"
-      p has_manies
-
-      puts "#has_one"
-      p has_ones
+      Graph do
+        route name => depends
+        save(:output, :png)
+      end
     end
 
     private
+
+    def dependencies
+      @dependencies ||= consts.map(&:value).map(&:value).uniq.map(&:to_sym)
+    end
 
     def consts
       @var_refs.select {|node|
@@ -58,7 +59,7 @@ module PawChecker
       @commands.select {|node|
         node.child_nodes.first.value == type
       }.map {|node|
-        node.child_nodes[1].child_nodes.first.child_nodes.first.value
+        node.child_nodes[1].child_nodes.first.child_nodes.first.value.classify.to_sym
       }
     end
   end
