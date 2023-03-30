@@ -15,7 +15,8 @@ module PawChecker
     def initialize(source)
       idx = SyntaxTree.index(source)
       @class_name = idx.find {|i|
-        i.instance_of?(SyntaxTree::Index::ClassDefinition)
+        i.instance_of?(SyntaxTree::Index::ClassDefinition) ||
+          i.instance_of?(SyntaxTree::Index::ModuleDefinition)
       }.name.to_sym
       @var_refs = SyntaxTree.search(source, "VarRef")
       @commands = SyntaxTree.search(source, "Command")
