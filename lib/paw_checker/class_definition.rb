@@ -29,7 +29,10 @@ module PawChecker
     private
 
     def references
-      @references ||= consts.map(&:value).map(&:value).uniq.map(&:to_sym)
+      consts.map(&:value).map(&:value).uniq.reject {|ref|
+        # Reject consts
+        ref.underscore.upcase == ref
+      }.map(&:to_sym)
     end
 
     def consts
@@ -39,15 +42,15 @@ module PawChecker
     end
 
     def belongs
-      @belongs ||= pick_association_commands("belongs_to")
+      pick_association_commands("belongs_to")
     end
 
     def has_manies
-      @has_manies ||= pick_association_commands("has_many")
+      pick_association_commands("has_many")
     end
 
     def has_ones
-      @has_ones ||= pick_association_commands("has_one")
+      pick_association_commands("has_one")
     end
 
     def pick_association_commands(type)
