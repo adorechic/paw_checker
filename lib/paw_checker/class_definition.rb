@@ -35,7 +35,7 @@ module PawChecker
     end
 
     def dependencies
-      references + belongs + has_manies + has_ones
+      @dependencies ||= (references + belongs + has_manies + has_ones).uniq
     end
 
     private
@@ -43,7 +43,9 @@ module PawChecker
     def references
       consts.map(&:value).map(&:value).uniq.reject {|ref|
         # Reject consts
-        ref.underscore.upcase == ref
+        ref.underscore.upcase == ref ||
+          # Reject self
+          ref.to_sym == class_name
       }.map(&:to_sym)
     end
 

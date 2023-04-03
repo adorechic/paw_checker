@@ -16,5 +16,12 @@ module PawChecker
         save(:output, :png)
       end
     end
+
+    desc "cluster [path]", "Calc cluster!"
+    def cluster(path)
+      defs = ClassDefinition.parse(path)
+      cluster = Cluster.new(defs)
+      puts cluster.modularity
+    end
   end
 end
