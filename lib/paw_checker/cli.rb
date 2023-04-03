@@ -14,10 +14,10 @@ module PawChecker
              else
                [ClassDefinition.parse(path)]
              end
-
+      clsSet = Set.new(defs.map(&:class_name))
       Graph do
         defs.each do |cls|
-          route cls.class_name => cls.dependencies
+          route cls.class_name => cls.dependencies.select {|d| clsSet.include?(d) }
         end
         save(:output, :png)
       end
