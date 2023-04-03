@@ -7,8 +7,20 @@ module PawChecker
 
     class << self
       def parse(path)
-        source = SyntaxTree.read(path)
-        ClassDefinition.new(source)
+        extract_wildcard(path).map do |epath|
+          source = SyntaxTree.read(epath)
+          ClassDefinition.new(source)
+        end
+      end
+
+      private
+
+      def extract_wildcard(path)
+        if File.directory?(path)
+          Dir.glob("#{path}/app/models/**/*.rb")
+        else
+          [path]
+        end
       end
     end
 
