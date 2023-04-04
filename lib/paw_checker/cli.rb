@@ -21,8 +21,23 @@ module PawChecker
     def cluster(path)
       defs = ClassDefinition.parse(path)
       cluster = Cluster.new(defs)
+
+      15.times.each do
+        puts cluster.modularity
+        cluster.merge!
+      end
       puts cluster.modularity
-      cluster.merge_simulation
+
+      Graph do
+        cluster.communities.each do |community|
+          subgraph do
+            community.definitions.each do |cls|
+              route cls.class_name => cls.dependencies.select {|d| cluster.include?(d) }
+            end
+          end
+        end
+        save(:output, :png)
+      end
     end
   end
 end

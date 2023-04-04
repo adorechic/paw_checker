@@ -1,7 +1,10 @@
 module PawChecker
   class Cluster
+    attr_reader :communities
+
     def initialize(definitions)
       @definitions = definitions
+      @nodes = @definitions.map(&:class_name)
       @communities = @definitions.map do |definition|
         Community.new(self, [definition])
       end
@@ -17,7 +20,11 @@ module PawChecker
       end
     end
 
-    def merge_simulation
+    def include?(node)
+      @nodes.include?(node)
+    end
+
+    def merge!
       max_from = nil
       max_to = nil
       max_score = -1
@@ -30,7 +37,7 @@ module PawChecker
           max_score = score
         end
       end
-      p [max_from.nodes, max_to.nodes, max_score]
+      max_from.merge!(max_to)
     end
   end
 end
