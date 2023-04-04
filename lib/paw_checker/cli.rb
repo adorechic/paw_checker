@@ -22,6 +22,7 @@ module PawChecker
       defs = ClassDefinition.parse(path)
       cluster = Cluster.new(defs)
       puts cluster.modularity
+      cluster.merge_simulation
     end
   end
 end
