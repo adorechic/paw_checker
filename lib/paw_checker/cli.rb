@@ -18,12 +18,14 @@ module PawChecker
     end
 
     desc "cluster [path]", "Calc cluster!"
+    method_options(limit: :numeric)
     def cluster(path)
       defs = ClassDefinition.parse(path)
       cluster = Cluster.new(defs)
 
       loop do
         break unless cluster.merge!
+        break if options.limit && cluster.modularity > options.limit
       end
       puts cluster.modularity
 
