@@ -37,7 +37,12 @@ module PawChecker
           max_score = score
         end
       end
-      max_from.merge!(max_to)
+      if max_score > 0
+        max_from.merge!(max_to)
+        true
+      else
+        false
+      end
     end
   end
 end

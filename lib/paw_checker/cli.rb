@@ -22,9 +22,8 @@ module PawChecker
       defs = ClassDefinition.parse(path)
       cluster = Cluster.new(defs)
 
-      15.times.each do
-        puts cluster.modularity
-        cluster.merge!
+      loop do
+        break unless cluster.merge!
       end
       puts cluster.modularity
 
