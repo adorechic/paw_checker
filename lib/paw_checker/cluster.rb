@@ -37,8 +37,9 @@ module PawChecker
           max_score = score
         end
       end
-      if max_score > 0
+      if max_score > 0.0
         max_from.merge!(max_to)
+        puts "delta mod => #{max_score}"
         true
       else
         false

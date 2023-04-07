@@ -68,10 +68,26 @@ module PawChecker
     end
 
     def pick_association_commands(type)
-      @commands.select {|node|
-        node.child_nodes.first.value == type
-      }.map {|node|
-        node.child_nodes[1].child_nodes.first.child_nodes.first.value.classify.to_sym
+      filtered_command_first_args(type: type).map {|arg|
+        arg.child_nodes.first.value.classify.to_sym
+      }
+    end
+
+    def filtered_command_first_args(type:)
+      filtered_commands(type: type).map {|method, args|
+        args.child_nodes.first
+      }.select {|first_arg|
+        # This code ignores strings
+        # e.g. has_many "hoge_#{pattern}"
+        first_arg.instance_of?(SyntaxTree::SymbolLiteral)
+      }
+    end
+
+    def filtered_commands(type:)
+      @commands.map {|node|
+        node.child_nodes
+      }.select {|method, args|
+        method.value == type
       }
     end
   end

@@ -23,11 +23,13 @@ module PawChecker
       defs = ClassDefinition.parse(path)
       cluster = Cluster.new(defs)
 
+      puts "Start marge simulation"
       loop do
         break unless cluster.merge!
         break if options.limit && cluster.modularity > options.limit
+        puts "mod => #{cluster.modularity}"
       end
-      puts cluster.modularity
+      puts "mod => #{cluster.modularity}"
 
       Graph do
         cluster.communities.each do |community|
